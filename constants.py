@@ -1,16 +1,23 @@
-# constants
-# Author : Loïc Pottier
-# Date : 12/02/2023
+"""
+Constants module.
+    Author : Loïc Pottier.
+    Creation date : 12/02/2023.
+"""
 
-BACKGROUND_COLOR = "white"
+BACKGROUND_COLOR = "white" 
+"""Basic color of the tkinter window"."""
 
-# SIZES
 CELL_SIZE = 5
+"""Size of a cell side in pixels."""
+
 GRID_HEIGHT = 100
+"""Height of the world grid in cells."""
+
 GRID_WIDTH = 150
+"""Witdh of the world grid in cells."""
 
-# TIME
 DELAY = 1
+"""Delay between each world update in milliseconds."""
 
-# GAMEPLAY
 BRUSH_SIZE=5
+"""Size of the brush in cells."""
