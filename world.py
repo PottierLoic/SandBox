@@ -7,14 +7,15 @@ World class.
 # Basic libraries.
 import numpy as np
 import random
+import copy
 
 # Local libraries.
 from constants import *
-
-from materials.stone import Stone
-from materials.sand import Sand
-from materials.water import Water
-from materials.lava import Lava
+from materials.stone import *
+from materials.sand import *
+from materials.water import *
+from materials.lava import *
+from materials.gas import *
 
 class World:
     """Manage the world state and update materials in it."""
@@ -33,13 +34,12 @@ class World:
     def update(self) -> None:
         """Update every material of the grid."""
 
-        # EXPERIMENT : i try to update by starting from the left 50% of time and from the right the other 50%
-        # it will maybe be a good idea to prevent liquids from flowing mainly to the right
         if self.checkState == 1:
             xStart, xEnd = 0, self.grid[0].size
         else:
             xStart, xEnd = self.grid[0].size-1, 0
 
+        # Movement section.
         for y in range(len(self.grid)-1, 0, -1):
             for x in range(xStart, xEnd, self.checkState):
                 if self.grid[y][x] == 0:
@@ -49,8 +49,57 @@ class World:
                     if newx != x or newy != y:
                         temp = self.grid[newy][newx]
                         self.grid[newy][newx] = self.grid[y][x]
-                        self.grid[y][x] = temp
+                        if temp == 0:
+                            self.grid[y][x] = self.grid[y-1][x]
+                            self.grid[y-1][x] = 0
+                        else:
+                            self.grid[y][x] = temp
+        
+        # State change section
+        temp = copy.deepcopy(self.grid)
+        for y in range(len(self.grid)-1, 0, -1):
+            for x in range(xStart, xEnd, self.checkState):
+                if self.grid[y][x] == 0:
+                    pass
+                else:
+                    transform = self.grid[y][x].nextState(self.getMatAround(x, y))
+                    if transform != 0:
+                        if transform == "stone":
+                            temp[y][x] = Stone()
+                        elif transform == "sand":
+                            temp[y][x] = Sand()
+                        elif transform == "water":
+                            temp[y][x] = Water()
+                        elif transform == "lava":
+                            temp[y][x] = Lava()
+                        elif transform == "gas":
+                            temp[y][x] = Gas()
+
+        self.grid = temp
+
         self.checkState = -self.checkState
+
+    def getMatAround(self, x, y) -> list:
+        """
+        Return a list of all the materials around x, y
+
+            Parameters:
+                x (int) : x position of the material in the grid.
+                y (int) : y position of the material in the grid.
+
+            Returns:
+                around (list): type of materials found around. 
+        """
+        around = []
+        if x-1>0 and self.grid[y][x-1]!=0:
+            around.append(self.grid[y][x-1].type)
+        if x+1<self.grid[0].size and self.grid[y][x+1]!=0:
+            around.append(self.grid[y][x+1].type)
+        if y-1>0 and self.grid[y-1][x]!=0:
+            around.append(self.grid[y-1][x].type)
+        if y+1<len(self.grid) and self.grid[y+1][x]!=0:
+            around.append(self.grid[y+1][x].type)
+        return around
 
     def getNextPosition(self, x, y) -> tuple:
         """
@@ -66,8 +115,10 @@ class World:
         if self.grid[y][x].state == None:  
             return (None)
         elif self.grid[y][x].state == "gas":
-            # gas comportement here
-            pass
+            # gas comportement here :
+            # actually it doesn't move, need to add probability for him to move depending on its temperature
+            # hot gas go up and cold gas go down, it could create nice flow
+            return (x, y)
         elif self.grid[y][x].state =="solid":
             if self.canGoUnder(x, y):
                 return (x, y+1)
@@ -170,5 +221,7 @@ class World:
                     self.grid[coords[1]][coords[0]] = Water()
                 elif self.selection == "lava":
                     self.grid[coords[1]][coords[0]] = Lava()
+                elif self.selection == "gas":
+                    self.grid[coords[1]][coords[0]] = Gas()
 
 

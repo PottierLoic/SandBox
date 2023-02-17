@@ -18,3 +18,16 @@ class Lava(Material):
         super().__init__("lava", "liquid")
         self.color = random.choice(LAVA_VARIATION)
         self.density = 1
+
+    def nextState(self, around):
+        """
+        Modify attributes depending on material types around
+        
+            Returns:
+                material (str): if the object need to transform.
+                0: if he stay itself.
+        """
+        for type in around:
+            if type == "water":
+                return "stone"
+        return 0

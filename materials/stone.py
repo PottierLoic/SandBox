@@ -18,3 +18,13 @@ class Stone(Material):
         super().__init__("stone", "solid")
         self.color = random.choice(STONE_VARIATION)
         self.density = 3
+
+    def nextState(self, around):
+        """
+        Modify attributes depending on material types around
+        
+            Returns:
+                material (str): if the object need to transform.
+                0: if he stay itself.
+        """
+        return 0

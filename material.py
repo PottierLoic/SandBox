@@ -14,14 +14,3 @@ class Material:
         """Initialise a blank material"""
         self.type = type
         self.state = state
-
- 
-    def nextState(self) -> str:
-        """
-        Determine the next state of the material
-
-            Returns:
-                newState (str): new state of the material
-        """
-        newState = None
-        return newState

@@ -13,6 +13,8 @@ from world import World
 
 def graphics():
     canvas.delete("all")
+    infoText = "Brush size : " + str(w.brush) + " | Material : " + str(w.selection)
+    infoLabel.config(text=infoText)
     for y in range(len(w.grid)):
         for x in range(len(w.grid[y])):
             if w.grid[y][x] == 0:
@@ -35,6 +37,10 @@ if __name__ == "__main__":
 
     canvas = Canvas(window, bg=BACKGROUND_COLOR, height=GRID_HEIGHT*CELL_SIZE, width=GRID_WIDTH*CELL_SIZE)
     canvas.pack()
+    
+    infoText = "Brush size : " + str(w.brush) + " | Material : " + str(w.selection)
+    infoLabel = Label(window, text=infoText)
+    infoLabel.pack()
 
     window.update()
 
