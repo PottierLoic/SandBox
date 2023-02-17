@@ -12,18 +12,23 @@ from constants import *
 from world import World
 
 def graphics():
-    canvas.delete("cell")
+    canvas.delete("all")
     for y in range(len(w.grid)):
         for x in range(len(w.grid[y])):
-            if w.grid[y][x] == 1:
-                canvas.create_rectangle(x * CELL_SIZE, y * CELL_SIZE, x * CELL_SIZE + CELL_SIZE, y * CELL_SIZE + CELL_SIZE, fill="black", tags="cell")
-   
+            if w.grid[y][x] == 0:
+                pass
+            else:
+                canvas.create_rectangle(x * CELL_SIZE, y * CELL_SIZE, x * CELL_SIZE + CELL_SIZE, y * CELL_SIZE + CELL_SIZE, fill=w.grid[y][x].color, outline=w.grid[y][x].color, tags=w.grid[y][x].type)
+
 def update():
     w.update()
     graphics()
     window.after(DELAY, update)
 
 if __name__ == "__main__":
+    # world inititalization 
+    w = World() 
+
     # Tkinter section.
     window = Tk()
     window.title("The sandbox")
@@ -34,10 +39,10 @@ if __name__ == "__main__":
     window.update()
 
     # Bindings.
-    window.bind("<Button-1>", lambda event: w.add_cell(int(event.x/CELL_SIZE), int(event.y/CELL_SIZE), 1))
-
+    window.bind("<Button-1>", lambda event: w.add_cell(int(event.x/CELL_SIZE), int(event.y/CELL_SIZE)))
+    window.bind("<Button-3>", lambda event: w.changeSelection())
+    
     # Main loop.
-    w = World()
     update()
 
     window.mainloop()

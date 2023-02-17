@@ -19,5 +19,7 @@ GRID_WIDTH = 150
 DELAY = 1
 """Delay between each world update in milliseconds."""
 
-BRUSH_SIZE=5
+BRUSH_SIZE=8
 """Size of the brush in cells."""
+
+MATERIALS_LIST=["stone", "sand", "water", "lava"]

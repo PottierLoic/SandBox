@@ -13,3 +13,5 @@ class Sand(Material):
 
     def __init__(self) -> None:
         super().__init__("sand", "solid")
+        self.color = "yellow"
+        self.density = 3
