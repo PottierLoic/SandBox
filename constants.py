@@ -19,7 +19,9 @@ GRID_WIDTH = 150
 DELAY = 1
 """Delay between each world update in milliseconds."""
 
-BRUSH_SIZE=8
-"""Size of the brush in cells."""
+MATERIALS_LIST = ["stone", "sand", "water", "lava"]
 
-MATERIALS_LIST=["stone", "sand", "water", "lava"]
+STONE_VARIATION = ["#B7B7B7", "#A6A6A6", "#A6A2A2", ]
+WATER_VARIATION = ["#0080FF", "#4C9BE9", "#2F97FF"]
+LAVA_VARIATION = ["#FFA200", "#FF6F00", "#FF8D35"]
+SAND_VARIATION = ["#FFFC83", "#FFFEBC", "#EFEA61"]

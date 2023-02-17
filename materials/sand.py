@@ -4,6 +4,9 @@ Sand class, inherit material properties,
     Creation date : 16/02/2023.
 """
 
+# Basic libraries
+import random
+
 # Local libraries.
 from constants import *
 from material import Material
@@ -13,5 +16,5 @@ class Sand(Material):
 
     def __init__(self) -> None:
         super().__init__("sand", "solid")
-        self.color = "yellow"
+        self.color = random.choice(SAND_VARIATION)
         self.density = 3

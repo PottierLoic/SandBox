@@ -24,6 +24,7 @@ class World:
         self.grid = np.zeros((GRID_HEIGHT, GRID_WIDTH), dtype=object)
         self.selection = "stone"
         self.checkState = 1
+        self.brush = 3
 
     def reset(self) -> None:
         """Reset the world."""
@@ -134,10 +135,17 @@ class World:
         else: 
             return True
 
-    def changeSelection(self):
+    def changeSelection(self) -> None:
         """Switch to the next material"""
         ind = MATERIALS_LIST.index(self.selection)
         self.selection = MATERIALS_LIST[(ind+1)%(len(MATERIALS_LIST))]
+        print(self.selection)
+
+    def changeBrush(self, incr) -> None:
+        """Change the brush size depending on incr value"""
+        if incr == -1 and self.brush > 3 or incr == 1:
+            self.brush += incr
+        print(self.brush)
 
     def add_cell(self, x, y) -> None:
         """
@@ -147,8 +155,7 @@ class World:
                 x (int) : x grid index relative to cursor position.
                 y (int) : y grid index relative to cursor position.
         """
-        print(self.selection)
-        len = int(BRUSH_SIZE/2)
+        len = int(self.brush/2)
         toDraw = []
         for dy in range(-len, len):     
             for dx in range(-len, len):     

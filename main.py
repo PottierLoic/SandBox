@@ -4,10 +4,10 @@ Sandbox game.
     Creation date : 12/02/2023.
 """
 
-# Basic library.
+# Basic libraries.
 from tkinter import *
 
-# Local library.
+# Local libraries.
 from constants import *
 from world import World
 
@@ -41,7 +41,9 @@ if __name__ == "__main__":
     # Bindings.
     window.bind("<Button-1>", lambda event: w.add_cell(int(event.x/CELL_SIZE), int(event.y/CELL_SIZE)))
     window.bind("<Button-3>", lambda event: w.changeSelection())
-    
+    window.bind("<Up>", lambda event: w.changeBrush(1))
+    window.bind("<Down>", lambda event: w.changeBrush(-1))
+
     # Main loop.
     update()
 
