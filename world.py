@@ -156,11 +156,17 @@ class World:
         if x-1 < 0:
             left = False
         elif self.grid[y][x-1] != 0 :
-            left = False
+            if self.grid[y][x-1].density < self.grid[y][x].density:
+                left = True
+            else:
+                left = False
         if x+1 >= self.grid[0].size:
             right = False
         elif self.grid[y][x+1] != 0 :
-            right = False
+            if self.grid[y][x+1].density < self.grid[y][x].density:
+                right = True
+            else:
+                right = False
         
         if left and right: return "lr"
         elif left and not right: return "l"
