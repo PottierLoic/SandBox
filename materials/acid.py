@@ -1,24 +1,24 @@
 """
-Sand class, inherit material properties, 
+Acid material class.
     Author : Loïc Pottier.
     Creation date : 16/02/2023.
 """
 
-# Basic libraries
+# Basic Libraries
 import random
 
 # Local libraries.
 from constants import *
 from material import Material
 
-class Sand(Material):
-    """Sand class, inherit from the material abstract class"""
+class Acid(Material):
+    """Acid class, inherit from the material abstract class"""
 
     def __init__(self) -> None:
-        super().__init__("sand", "solid")
-        self.color = random.choice(SAND_VARIATION)
-        self.density = 3
-        self.degradation = 0
+        super().__init__("acid", "liquid")
+        self.color = random.choice(ACID_VARIATION)
+        self.density = 1
+        self.temperature = 0
 
     def nextState(self, around):
         """
@@ -29,9 +29,9 @@ class Sand(Material):
                 0: if he stay itself.
         """
         for type in around:
-            if type == "acid":
-                self.degradation += 1
+            if type == "lava":
+                self.temperature += 1
 
-        if self.degradation >= STONE_ACID_RESISTANCE:
-            return "destroy"
+        if self.temperature >= ACID_TEMP_RESISTANCE:
+            return "gas"
         return 0

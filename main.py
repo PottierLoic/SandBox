@@ -23,13 +23,29 @@ def graphics():
                 canvas.create_rectangle(x * CELL_SIZE, y * CELL_SIZE, x * CELL_SIZE + CELL_SIZE, y * CELL_SIZE + CELL_SIZE, fill=w.grid[y][x].color, outline=w.grid[y][x].color, tags=w.grid[y][x].type)
 
 def update():
+    if clickState == 1:
+        w.add_cell(int(mousex/CELL_SIZE), int(mousey/CELL_SIZE))
     w.update()
     graphics()
     window.after(DELAY, update)
 
+def click_press():
+    global clickState
+    clickState = 1
+
+def click_release():
+    global clickState
+    clickState = 0
+
+def motion(x, y):
+    global mousex, mousey
+    mousex, mousey = x, y
+
 if __name__ == "__main__":
     # world inititalization 
     w = World() 
+    clickState = 0
+    mousex, mousey = 0, 0
 
     # Tkinter section.
     window = Tk()
@@ -45,7 +61,9 @@ if __name__ == "__main__":
     window.update()
 
     # Bindings.
-    window.bind("<Button-1>", lambda event: w.add_cell(int(event.x/CELL_SIZE), int(event.y/CELL_SIZE)))
+    window.bind("<ButtonPress-1>", lambda event: click_press())
+    window.bind("<ButtonRelease-1>", lambda event: click_release())
+    window.bind("<Motion>", lambda event: motion(event.x, event.y))
     window.bind("<Button-3>", lambda event: w.changeSelection())
     window.bind("<Up>", lambda event: w.changeBrush(1))
     window.bind("<Down>", lambda event: w.changeBrush(-1))

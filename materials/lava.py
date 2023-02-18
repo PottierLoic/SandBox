@@ -18,6 +18,7 @@ class Lava(Material):
         super().__init__("lava", "liquid")
         self.color = random.choice(LAVA_VARIATION)
         self.density = 1
+        self.temperature = 100
 
     def nextState(self, around):
         """
@@ -29,5 +30,11 @@ class Lava(Material):
         """
         for type in around:
             if type == "water":
-                return "stone"
+                self.temperature -= 1
+            elif type == "acid":
+                self.temperature -= 1
+        self.temperature -= 0.2
+        if self.temperature <= LAVA_TEMP_RESISTANCE:
+            return "stone"
+
         return 0

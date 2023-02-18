@@ -1,5 +1,5 @@
 """
-Sand class, inherit material properties, 
+Bedrock material class
     Author : Loïc Pottier.
     Creation date : 16/02/2023.
 """
@@ -11,14 +11,13 @@ import random
 from constants import *
 from material import Material
 
-class Sand(Material):
-    """Sand class, inherit from the material abstract class"""
+class Bedrock(Material):
+    """Bedrock class, inherit from the material abstract class"""
 
     def __init__(self) -> None:
-        super().__init__("sand", "solid")
-        self.color = random.choice(SAND_VARIATION)
-        self.density = 3
-        self.degradation = 0
+        super().__init__("bedrock", "static")
+        self.color = "pink"
+        self.density = 100
 
     def nextState(self, around):
         """
@@ -28,10 +27,4 @@ class Sand(Material):
                 material (str): if the object need to transform.
                 0: if he stay itself.
         """
-        for type in around:
-            if type == "acid":
-                self.degradation += 1
-
-        if self.degradation >= STONE_ACID_RESISTANCE:
-            return "destroy"
         return 0

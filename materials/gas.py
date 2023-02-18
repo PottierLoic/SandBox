@@ -18,6 +18,7 @@ class Gas(Material):
         super().__init__("gas", "gas")
         self.color = random.choice(GAS_VARIATION)
         self.density = 0
+        self.temperature = 25
 
     def nextState(self, around):
         """
@@ -27,4 +28,11 @@ class Gas(Material):
                 material (str): if the object need to transform.
                 0: if he stay itself.
         """
+        for type in around:
+            if type == "water":
+                self.temperature -= 1
+
+        self.temperature -= 0.1
+        if self.temperature <= GAS_TEMP_RESISTANCE:
+            return "water"
         return 0

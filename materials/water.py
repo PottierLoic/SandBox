@@ -18,6 +18,26 @@ class Water(Material):
         super().__init__("water", "liquid")
         self.color = random.choice(WATER_VARIATION)
         self.density = 1
+        self.degradation = 0
+        self.temperature = 0
+
+    # def changeState(self, state):
+    #     """
+    #     Change the state of the material.
+
+    #         Args:
+    #             state (str): the state to change.
+    #     """
+    #     if state == "gas":
+    #         self.type = "gas"
+    #         self.state = "gas"
+    #         self.color = random.choice(GAS_VARIATION)
+    #         self.density = 0
+    #     if state == "liquid":
+    #         self.type = "water"
+    #         self.state = "liquid"
+    #         self.color = random.choice(WATER_VARIATION)
+    #         self.density = 1
 
     def nextState(self, around):
         """
@@ -28,6 +48,13 @@ class Water(Material):
                 0: if he stay itself.
         """
         for type in around:
-            if type == "lava":
-                return "gas"
+            if type == "acid":
+                self.degradation += 1
+            elif type == "lava":
+                self.temperature += 1
+        
+        if self.degradation >= WATER_ACID_RESISTANCE:
+            return "acid"
+        elif self.temperature >= WATER_TEMP_RESISTANCE:
+            return "gas"
         return 0

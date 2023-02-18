@@ -11,11 +11,14 @@ import copy
 
 # Local libraries.
 from constants import *
+
 from materials.stone import *
 from materials.sand import *
 from materials.water import *
 from materials.lava import *
 from materials.gas import *
+from materials.acid import *
+from materials.bedrock import *
 
 class World:
     """Manage the world state and update materials in it."""
@@ -40,24 +43,30 @@ class World:
             xStart, xEnd = self.grid[0].size-1, 0
 
         # Movement section.
-        for y in range(len(self.grid)-1, 0, -1):
+        for y in range(GRID_HEIGHT-1, -1, -1):
             for x in range(xStart, xEnd, self.checkState):
                 if self.grid[y][x] == 0:
                     pass
                 else:
                     newx, newy = self.getNextPosition(x, y)
-                    if newx != x or newy != y:
-                        temp = self.grid[newy][newx]
-                        self.grid[newy][newx] = self.grid[y][x]
-                        if temp == 0:
-                            self.grid[y][x] = self.grid[y-1][x]
-                            self.grid[y-1][x] = 0
-                        else:
+                    if self.grid[y][x].type != "gas":
+                        if newx != x or newy != y:
+                            temp = self.grid[newy][newx]
+                            self.grid[newy][newx] = self.grid[y][x]
+                            if temp == 0:
+                                self.grid[y][x] = self.grid[y-1][x]
+                                self.grid[y-1][x] = 0
+                            else:
+                                self.grid[y][x] = temp
+                    else:
+                        if newx != x or newy != y:
+                            temp = self.grid[newy][newx]
+                            self.grid[newy][newx] = self.grid[y][x]
                             self.grid[y][x] = temp
         
         # State change section
         temp = copy.deepcopy(self.grid)
-        for y in range(len(self.grid)-1, 0, -1):
+        for y in range(GRID_HEIGHT-1, -1, -1):
             for x in range(xStart, xEnd, self.checkState):
                 if self.grid[y][x] == 0:
                     pass
@@ -74,6 +83,12 @@ class World:
                             temp[y][x] = Lava()
                         elif transform == "gas":
                             temp[y][x] = Gas()
+                        elif transform == "acid":
+                            temp[y][x] = Acid()
+                        elif transform == "destroy":
+                            temp[y][x] = 0
+                    else:
+                        temp[y][x] = self.grid[y][x]
 
         self.grid = temp
 
@@ -114,13 +129,42 @@ class World:
         """
         if self.grid[y][x].state == None:  
             return (None)
+        elif self.grid[y][x].state == "static":
+            return(x, y)
         elif self.grid[y][x].state == "gas":
-            # gas comportement here :
-            # actually it doesn't move, need to add probability for him to move depending on its temperature
-            # hot gas go up and cold gas go down, it could create nice flow
-            return (x, y)
+            pos = []
+            if x-1>=0 and self.grid[y][x-1]==0:
+                pos.append([x-1, y])
+            if x+1<self.grid[0].size and self.grid[y][x+1]==0:
+                pos.append([x+1, y])
+            if y-1>=0 and self.grid[y-1][x]==0:
+                pos.append([x, y-1])
+            if len(pos) == 0:
+                return (x, y)
+            else:
+                return random.choice(pos)
         elif self.grid[y][x].state =="solid":
             if self.canGoUnder(x, y):
+                if self.grid[y+1][x] != 0:
+                    if self.grid[y+1][x].state == "liquid":
+                        direction = self.canFlow(x, y)
+                        if direction == "l":
+                            temp = self.grid[y][x-1]
+                            self.grid[y][x-1] = self.grid[y+1][x]
+                            self.grid[y+1][x] = temp
+                        elif direction == "r":
+                            temp = self.grid[y][x+1]
+                            self.grid[y][x+1] = self.grid[y+1][x]
+                            self.grid[y+1][x] = temp
+                        elif direction == "lr":
+                            if random.randrange(2) == 0: 
+                                temp = self.grid[y][x+1]
+                                self.grid[y][x+1] = self.grid[y+1][x]
+                                self.grid[y+1][x] = temp
+                            else: 
+                                temp = self.grid[y][x-1]
+                                self.grid[y][x-1] = self.grid[y+1][x]
+                                self.grid[y+1][x] = temp
                 return (x, y+1)
             else:
                 return (x, y)
@@ -184,7 +228,7 @@ class World:
             Returns:
                 True if it can go down, False if there is already something, or out of bound.
         """
-        if y+1 >= len(self.grid):
+        if y+1 >= GRID_HEIGHT:
             return False
         elif self.grid[y+1][x]!=0:
             if self.grid[y+1][x].density < self.grid[y][x].density:
@@ -214,20 +258,26 @@ class World:
         """
         len = int(self.brush/2)
         toDraw = []
-        for dy in range(-len, len):     
-            for dx in range(-len, len):     
+        for dy in range(-len, len):
+            for dx in range(-len, len):
                 toDraw.append((x+dx, y+dy))
         for coords in toDraw:
-            if 0<=coords[0]<=self.grid[0].size and 0<=coords[1]<=self.grid.size and self.grid[coords[1]][coords[0]] == 0:
-                if self.selection == "stone":
-                    self.grid[coords[1]][coords[0]] = Stone()
-                elif self.selection == "sand":
-                    self.grid[coords[1]][coords[0]] = Sand()
-                elif self.selection == "water":
-                    self.grid[coords[1]][coords[0]] = Water()
-                elif self.selection == "lava":
-                    self.grid[coords[1]][coords[0]] = Lava()
-                elif self.selection == "gas":
-                    self.grid[coords[1]][coords[0]] = Gas()
+            if 0<=coords[0]<GRID_WIDTH and 0<=coords[1]<GRID_HEIGHT:
+                if self.grid[coords[1]][coords[0]] == 0:
+                    if self.selection == "stone":
+                        self.grid[coords[1]][coords[0]] = Stone()
+                    elif self.selection == "sand":
+                        self.grid[coords[1]][coords[0]] = Sand()
+                    elif self.selection == "water":
+                        self.grid[coords[1]][coords[0]] = Water()
+                    elif self.selection == "lava":
+                        self.grid[coords[1]][coords[0]] = Lava()
+                    elif self.selection == "gas":
+                        self.grid[coords[1]][coords[0]] = Gas()
+                    elif self.selection == "acid":
+                        self.grid[coords[1]][coords[0]] = Acid()
+                    elif self.selection == "bedrock":
+                        self.grid[coords[1]][coords[0]] = Bedrock()
+
 
 
