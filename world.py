@@ -15,8 +15,6 @@ from constants import *
 from materials.stone import *
 from materials.sand import *
 from materials.water import *
-from materials.lava import *
-from materials.gas import *
 from materials.acid import *
 from materials.bedrock import *
 
@@ -49,7 +47,7 @@ class World:
                     pass
                 else:
                     newx, newy = self.getNextPosition(x, y)
-                    if self.grid[y][x].type != "gas":
+                    if self.grid[y][x].state != "gas":
                         if newx != x or newy != y:
                             temp = self.grid[newy][newx]
                             self.grid[newy][newx] = self.grid[y][x]
@@ -66,6 +64,7 @@ class World:
         
         # State change section
         temp = copy.deepcopy(self.grid)
+        #TODO: find a way to check the y = 0 index without the -1 end to prevent bottom material teleportation
         for y in range(GRID_HEIGHT-1, -1, -1):
             for x in range(xStart, xEnd, self.checkState):
                 if self.grid[y][x] == 0:
@@ -73,16 +72,8 @@ class World:
                 else:
                     transform = self.grid[y][x].nextState(self.getMatAround(x, y))
                     if transform != 0:
-                        if transform == "stone":
-                            temp[y][x] = Stone()
-                        elif transform == "sand":
+                        if transform == "sand":
                             temp[y][x] = Sand()
-                        elif transform == "water":
-                            temp[y][x] = Water()
-                        elif transform == "lava":
-                            temp[y][x] = Lava()
-                        elif transform == "gas":
-                            temp[y][x] = Gas()
                         elif transform == "acid":
                             temp[y][x] = Acid()
                         elif transform == "destroy":
@@ -103,17 +94,17 @@ class World:
                 y (int) : y position of the material in the grid.
 
             Returns:
-                around (list): type of materials found around. 
+                around (list): materials (object) found around. 
         """
         around = []
         if x-1>0 and self.grid[y][x-1]!=0:
-            around.append(self.grid[y][x-1].type)
+            around.append(self.grid[y][x-1])
         if x+1<self.grid[0].size and self.grid[y][x+1]!=0:
-            around.append(self.grid[y][x+1].type)
+            around.append(self.grid[y][x+1])
         if y-1>0 and self.grid[y-1][x]!=0:
-            around.append(self.grid[y-1][x].type)
+            around.append(self.grid[y-1][x])
         if y+1<len(self.grid) and self.grid[y+1][x]!=0:
-            around.append(self.grid[y+1][x].type)
+            around.append(self.grid[y+1][x])
         return around
 
     def getNextPosition(self, x, y) -> tuple:
@@ -265,19 +256,20 @@ class World:
             if 0<=coords[0]<GRID_WIDTH and 0<=coords[1]<GRID_HEIGHT:
                 if self.grid[coords[1]][coords[0]] == 0:
                     if self.selection == "stone":
-                        self.grid[coords[1]][coords[0]] = Stone()
+                        self.grid[coords[1]][coords[0]] = Stone("solid")
+                    elif self.selection == "lava":
+                        self.grid[coords[1]][coords[0]] = Stone("liquid")
                     elif self.selection == "sand":
                         self.grid[coords[1]][coords[0]] = Sand()
                     elif self.selection == "water":
-                        self.grid[coords[1]][coords[0]] = Water()
-                    elif self.selection == "lava":
-                        self.grid[coords[1]][coords[0]] = Lava()
+                        self.grid[coords[1]][coords[0]] = Water("liquid")
+                    elif self.selection == "ice":
+                        self.grid[coords[1]][coords[0]] = Water("solid")
                     elif self.selection == "gas":
-                        self.grid[coords[1]][coords[0]] = Gas()
+                        self.grid[coords[1]][coords[0]] = Water("gas")
                     elif self.selection == "acid":
                         self.grid[coords[1]][coords[0]] = Acid()
                     elif self.selection == "bedrock":
                         self.grid[coords[1]][coords[0]] = Bedrock()
-
 
 

@@ -6,8 +6,8 @@ Constants module.
 
 BACKGROUND_COLOR = "black" 
 """Basic color of the tkinter window"."""
-
 CELL_SIZE = 18
+
 """Size of a cell side in pixels."""
 
 GRID_HEIGHT = 40
@@ -19,27 +19,28 @@ GRID_WIDTH = 60
 DELAY = 1
 """Delay between each world update in milliseconds."""
 
-MATERIALS_LIST = ["stone", "sand", "water", "lava", "gas", "acid", "bedrock"]
+MATERIALS_LIST = ["stone", "sand", "water", "ice", "lava", "acid", "bedrock", "gas"]
 
-STONE_VARIATION = ["#606060", "#737373", "#919191", "#757575"]
-WATER_VARIATION = ["#1ca3ec", "#2389da", "#2389d1"]
-LAVA_VARIATION = ["#ff321b", "#f1321d", "#ff4719"]
+STONE_SOLID_VARIATION = ["#606060", "#737373", "#919191", "#757575"]
+STONE_LIQUID_VARIATION = ["#ff321b", "#f1321d", "#ff4719"]
+
+WATER_LIQUID_VARIATION = ["#1ca3ec", "#2389da", "#2389d1"]
+WATER_GAS_VARIATION = ["#D8D8D8", "#C8C8C8", "#B8B8B8"]
+WATER_SOLID_VARIATION = ["#66FFFF", "#67FFFF", "#66FFF0"]
+
 SAND_VARIATION = ["#FFFC83", "#FFFEBC", "#EFEA61"]
-GAS_VARIATION = ["#D8D8D8", "#C8C8C8", "#B8B8B8"]
+
 ACID_VARIATION = ["#00FF00", "#76FF76", "#3ADC3A"]
 
 # STONE PROPERTIES
 STONE_ACID_RESISTANCE = 50
-STONE_TEMP_RESISTANCE = 50
+STONE_TEMP_RESISTANCE = 100
 STONE_EROSION_RESISTANCE = 200
 
 # WATER PROPERTIES
 WATER_ACID_RESISTANCE = 25
-WATER_TEMP_RESISTANCE = 25
-
-# LAVA PROPERTIES
-LAVA_ACID_RESISTANCE = 25
-LAVA_TEMP_RESISTANCE = 0
+WATER_EVAPORATION = 100
+WATER_SOLIDIFICATION = 0
 
 # SAND PROPERTIES
 SAND_ACID_RESISTANCE = 25

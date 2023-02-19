@@ -33,7 +33,9 @@ class Lava(Material):
                 self.temperature -= 1
             elif type == "acid":
                 self.temperature -= 1
-        self.temperature -= 0.2
+            elif type == "stone":
+                self.temperature -= 1
+        self.temperature -= random.choice([0.05, 0.1, 0.01, 0.02])
         if self.temperature <= LAVA_TEMP_RESISTANCE:
             return "stone"
 

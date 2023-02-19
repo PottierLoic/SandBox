@@ -15,7 +15,7 @@ class Bedrock(Material):
     """Bedrock class, inherit from the material abstract class"""
 
     def __init__(self) -> None:
-        super().__init__("bedrock", "static")
+        super().__init__("bedrock", "solid")
         self.color = "pink"
         self.density = 100
 

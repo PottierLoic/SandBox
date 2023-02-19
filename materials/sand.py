@@ -17,7 +17,7 @@ class Sand(Material):
     def __init__(self) -> None:
         super().__init__("sand", "solid")
         self.color = random.choice(SAND_VARIATION)
-        self.density = 3
+        self.density = 4
         self.degradation = 0
 
     def nextState(self, around):
