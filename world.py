@@ -24,6 +24,7 @@ class World:
     def __init__(self) -> None:
         """Initialize the world."""
         self.grid = np.zeros((GRID_HEIGHT, GRID_WIDTH), dtype=object)
+        self.oldGrid = copy.deepcopy(self.grid)
         self.selection = "stone"
         self.checkState = 1
         self.brush = 3
@@ -34,6 +35,7 @@ class World:
 
     def update(self) -> None:
         """Update every material of the grid."""
+        self.oldGrid = copy.deepcopy(self.grid)
 
         if self.checkState == 1:
             xStart, xEnd = 0, self.grid[0].size
@@ -219,7 +221,7 @@ class World:
             Returns:
                 True if it can go down, False if there is already something, or out of bound.
         """
-        if y+1 >= GRID_HEIGHT:
+        if y+1 == GRID_HEIGHT:
             return False
         elif self.grid[y+1][x]!=0:
             if self.grid[y+1][x].density < self.grid[y][x].density:
@@ -272,4 +274,34 @@ class World:
                     elif self.selection == "bedrock":
                         self.grid[coords[1]][coords[0]] = Bedrock()
 
+    def eraseCell(self, x, y):
+        """
+        Erase the materials at x, y
+        
+            Parameters:
+                x (int) : x grid index relative to cursor position.
+                y (int) : y grid index relative to cursor position.
+        """
+        len = int(self.brush/2)
+        toDraw = []
+        for dy in range(-len, len):
+            for dx in range(-len, len):
+                toDraw.append((x+dx, y+dy))
+        for coords in toDraw:
+            if 0<=coords[0]<GRID_WIDTH and 0<=coords[1]<GRID_HEIGHT:
+                self.grid[coords[1]][coords[0]] = 0
 
+    def __str__(self) -> str:
+        returnStr="newGrid :\n"
+        for x in self.grid:
+            for y in x:
+                if y!=0 : returnStr+="1 "
+                else: returnStr+="0 "
+            returnStr+="\n"
+        returnStr+="\n\nOld grid:\n"
+        for x in self.oldGrid:
+            for y in x:
+                if y!=0 : returnStr+="1 "
+                else: returnStr+="0 "
+            returnStr+="\n"
+        return returnStr
