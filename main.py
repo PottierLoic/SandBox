@@ -14,30 +14,23 @@ from constants import *
 from world import World
 
 def graphics():
-    canvas.delete("selection", "fps")
+    canvas.delete("all")
     infoText = "Brush size : " + str(w.brush) + " | Material : " + str(w.selection)
     infoLabel.config(text=infoText)
     # eraser and pencil button display
-    canvas.create_image(25, 25, image=pencilImg, tags="interface")
-    canvas.create_image(60, 25, image=eraserImg, tags="interface")
+    canvas.create_image(25, 25, image=pencilImg, tag="interface")
+    canvas.create_image(60, 25, image=eraserImg, tag="interface")
     if mode == 0:
-        canvas.create_rectangle(12, 12, 38, 38, tags="selection")
+        canvas.create_rectangle(12, 12, 38, 38, tag="selection")
     else:
-        canvas.create_rectangle(47, 12, 73, 38, tags="selection")
+        canvas.create_rectangle(47, 12, 73, 38, tag="selection")
     # materials display
-    print(w)
     for y in range(len(w.grid)):
         for x in range(len(w.grid[y])):
-            if w.grid[y][x] == w.oldGrid[y][x]:
+            if w.grid[y][x] == 0:
                 pass
-            elif w.grid[y][x] == 0:
-                print("supprime")
-                canvas.delete(f'{x}, {y}')
             else:
-                print("change")
-                texte=f'{x}, {y}'
-                canvas.delete(texte)
-                canvas.create_rectangle(x*CELL_SIZE, y*CELL_SIZE, x*CELL_SIZE+CELL_SIZE, y*CELL_SIZE+CELL_SIZE, fill=w.grid[y][x].color, outline=w.grid[y][x].color, tags=texte)
+                canvas.create_rectangle(x * CELL_SIZE, y * CELL_SIZE, x * CELL_SIZE + CELL_SIZE, y * CELL_SIZE + CELL_SIZE, fill=w.grid[y][x].color, outline=w.grid[y][x].color, tags=(str(x)+" "+str(y)))
     # Display fps
     canvas.create_text(GRID_WIDTH*CELL_SIZE - 60, GRID_HEIGHT*CELL_SIZE - 20, text=f"FPS: {round(frameRate)}", font="Arial 10", tag="fps")
 

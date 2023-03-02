@@ -7,13 +7,13 @@ Constants module.
 BACKGROUND_COLOR = "white" 
 """Basic color of the tkinter window"."""
 
-CELL_SIZE = 5
+CELL_SIZE = 20
 """Size of a cell side in pixels."""
 
-GRID_HEIGHT = 60
+GRID_HEIGHT = 30
 """Height of the world grid in cells."""
 
-GRID_WIDTH = 90
+GRID_WIDTH = 40
 """Witdh of the world grid in cells."""
 
 DELAY = 1
